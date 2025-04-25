@@ -1,66 +1,74 @@
-// battle.js
-
+// Initialize player and opponent health
 let playerHealth = 100;
 let opponentHealth = 100;
 let playerTurn = true;  // Starts with the player's turn
 let gameOver = false;
 
-// Function to update the health bars
-function updateHealth() {
-  document.getElementById('player-health').style.width = `${playerHealth}%`;
-  document.getElementById('opponent-health').style.width = `${opponentHealth}%`;
-}
+// Function to move the player heart using keypresses (WASD)
+function movePlayer(event) {
+  const player = document.getElementById("player");
+  let left = parseInt(player.style.left || "50%");
+  let top = parseInt(player.style.top || "50%");
 
-// Function to handle the player's action
-function takeAction(action) {
-  if (gameOver) return;
-
-  if (playerTurn) {
-    if (action === 'fight') {
-      opponentHealth -= 10;
-      alert('You attacked the opponent!');
-    } else if (action === 'act') {
-      alert('You try to act...');
-    } else if (action === 'mercy') {
-      alert('You chose mercy...');
-    }
-
-    if (opponentHealth <= 0) {
-      alert('You defeated the boss!');
-      gameOver = true;
-    } else {
-      switchTurn();  // Switch to the opponent's turn
-    }
-  } else {
-    alert('It\'s not your turn!');
+  // Moving the player based on keypress
+  switch (event.key) {
+    case "w": // Move up
+      top -= 5;
+      break;
+    case "a": // Move left
+      left -= 5;
+      break;
+    case "s": // Move down
+      top += 5;
+      break;
+    case "d": // Move right
+      left += 5;
+      break;
   }
+
+  // Update player position
+  player.style.left = `${left}%`;
+  player.style.top = `${top}%`;
 }
 
-// Function to switch turns
+// Function to switch turns (for future bullet hell)
 function switchTurn() {
-  playerTurn = !playerTurn;
-  document.getElementById('turn-indicator').textContent = playerTurn ? "It's your turn!" : "Opponent's turn! Bullet Hell!";
-  
-  if (!playerTurn) {
-    // Start the opponent's turn (Bullet Hell phase)
-    setTimeout(opponentTurn, 1000);
+  if (playerTurn) {
+    playerTurn = false;
+    // Logic for opponent turn (bullet hell or other actions)
+    // Once opponent turn is over, switch back to player turn
+    setTimeout(() => {
+      playerTurn = true;
+    }, 1000);  // You can adjust this delay as needed
   }
 }
 
-// Opponent's turn: Bullet Hell Phase (simple simulation)
-function opponentTurn() {
-  // In Bullet Hell phase, the opponent shoots bullets at the player
-  alert('The opponent shoots bullets! You must dodge!');
-  playerHealth -= 10; // Damage from bullets (can be improved later)
+// Update health values (for future damage handling)
+function updateHealth() {
+  document.getElementById("playerHealthValue").textContent = playerHealth;
+  document.getElementById("opponentHealthValue").textContent = opponentHealth;
+}
 
-  if (playerHealth <= 0) {
-    alert('You have been defeated!');
-    gameOver = true;
+// Add event listener for movement
+document.addEventListener("keydown", movePlayer);
+
+// Placeholder to simulate an opponent attack (you can add your own logic later)
+function opponentAttack() {
+  if (!playerTurn && !gameOver) {
+    // Simulate opponent attack (e.g., reduce player health)
+    playerHealth -= 10;
+    updateHealth();
+
+    // Check if game is over
+    if (playerHealth <= 0) {
+      gameOver = true;
+      alert("Game Over! You lost.");
+    }
   }
+}
 
-  // Switch back to the player's turn after opponent's action
+// Simulate a battle turn cycle
+setInterval(() => {
+  opponentAttack();
   switchTurn();
-}
-
-// Initialize the game with health bars
-updateHealth();
+}, 2000); // Every 2 seconds, opponent takes a turn (this can be adjusted)
