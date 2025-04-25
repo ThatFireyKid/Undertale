@@ -3,105 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Undertale Bullet Hell</title>
+  <title>Undertale Battle</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: black;
+      background-color: #000;
       color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
-    .game-container {
-      position: relative;
-      width: 300px;
-      height: 300px;
+    .battle-ui {
+      margin-top: 20px;
+    }
+    .health-bar {
+      width: 200px;
+      height: 25px;
       border: 2px solid white;
+      margin: 10px 0;
     }
-    .soul {
-      position: absolute;
-      width: 30px;
-      height: 30px;
+    .health {
+      height: 100%;
       background-color: red;
-      border-radius: 50%;
-      top: 135px; /* Start position vertically centered */
-      left: 135px; /* Start position horizontally centered */
+      width: 100%;
     }
-    .bullet {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: blue;
-      border-radius: 50%;
+    .action-menu {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+    .turn-indicator {
+      margin-top: 20px;
+      font-size: 24px;
     }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <div class="soul" id="soul"></div>
+  <div class="battle-ui">
+    <div>
+      <h3>Player (Soul)</h3>
+      <div class="health-bar">
+        <div class="health" id="player-health"></div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Opponent (Boss)</h3>
+      <div class="health-bar">
+        <div class="health" id="opponent-health"></div>
+      </div>
+    </div>
+
+    <div class="action-menu" id="action-menu">
+      <button onclick="takeAction('fight')">Fight</button>
+      <button onclick="takeAction('act')">Act</button>
+      <button onclick="takeAction('mercy')">Mercy</button>
+    </div>
+
+    <div class="turn-indicator" id="turn-indicator">It's your turn!</div>
   </div>
 
-  <script>
-    const soul = document.getElementById('soul');
-    let soulX = 135, soulY = 135; // Starting position of the soul
-
-    // Update the position of the soul element
-    function updateSoulPosition() {
-      soul.style.left = soulX + 'px';
-      soul.style.top = soulY + 'px';
-    }
-
-    // Listen for keydown events to move the soul
-    window.addEventListener('keydown', (e) => {
-      const gridSize = 30; // Size of each "step"
-      switch (e.key) {
-        case 'ArrowUp':
-        case 'w':
-          soulY = Math.max(soulY - gridSize, 0); // Prevent moving outside the top boundary
-          break;
-        case 'ArrowDown':
-        case 's':
-          soulY = Math.min(soulY + gridSize, 270); // Prevent moving outside the bottom boundary
-          break;
-        case 'ArrowLeft':
-        case 'a':
-          soulX = Math.max(soulX - gridSize, 0); // Prevent moving outside the left boundary
-          break;
-        case 'ArrowRight':
-        case 'd':
-          soulX = Math.min(soulX + gridSize, 270); // Prevent moving outside the right boundary
-          break;
-      }
-      updateSoulPosition(); // Update the position after moving
-    });
-
-    // Set up the game loop for bullets
-    function spawnBullet() {
-      const bullet = document.createElement('div');
-      bullet.classList.add('bullet');
-      bullet.style.left = Math.random() * 290 + 'px'; // Random X position
-      bullet.style.top = '0px'; // Start from the top
-      document.querySelector('.game-container').appendChild(bullet);
-      
-      // Move the bullet down
-      let bulletY = 0;
-      const moveBullet = setInterval(() => {
-        bulletY += 5;
-        bullet.style.top = bulletY + 'px';
-
-        // Remove the bullet when it goes off-screen
-        if (bulletY > 300) {
-          clearInterval(moveBullet);
-          bullet.remove();
-        }
-      }, 50);
-    }
-
-    // Spawn bullets every 1.5 seconds
-    setInterval(spawnBullet, 1500);
-  </script>
+  <script src="battle.js"></script>
 </body>
 </html>
+
