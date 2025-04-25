@@ -6,12 +6,38 @@ let enemyTurn = false;
 const soul = document.getElementById("soul");
 let soulX = 150;
 let soulY = 150;
-let moveSpeed = 5;
+const speed = 2; 
+const keysHeld = new Set();
 
 function updateSoulPosition() {
-  soul.style.left = soulX + "px";
-  soul.style.top = soulY + "px";
+  if (!isPlayerTurn) {
+    if (keysHeld.has("w") || keysHeld.has("ArrowUp")) soulY -= speed;
+    if (keysHeld.has("s") || keysHeld.has("ArrowDown")) soulY += speed;
+    if (keysHeld.has("a") || keysHeld.has("ArrowLeft")) soulX -= speed;
+    if (keysHeld.has("d") || keysHeld.has("ArrowRight")) soulX += speed;
+
+    // Clamp within battle box bounds (adjust as needed)
+    soulX = Math.max(0, Math.min(290, soulX));
+    soulY = Math.max(0, Math.min(190, soulY));
+
+    soul.style.left = soulX + "px";
+    soul.style.top = soulY + "px";
+  }
+
+  requestAnimationFrame(updateSoulPosition);
 }
+
+// Start the loop
+requestAnimationFrame(updateSoulPosition);
+
+// Track key presses
+document.addEventListener("keydown", (e) => {
+  keysHeld.add(e.key.toLowerCase());
+});
+
+document.addEventListener("keyup", (e) => {
+  keysHeld.delete(e.key.toLowerCase());
+});
 
 function updateSelection() {
   menuOptions.forEach((id, index) => {
