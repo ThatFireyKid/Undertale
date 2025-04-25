@@ -34,10 +34,11 @@ body {
   display: none;
 }
 
-#player-soul {
+#soul {
+  width: 20px;
+  height: 20px;
+  background-image: url('assets/Soul.png');
+  background-size: contain;
+  background-repeat: no-repeat;
   position: absolute;
-  left: 140px;
-  top: 90px;
-  color: red;
-  font-size: 20px;
 }
