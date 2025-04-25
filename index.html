@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undertale Battle - Bullet Hell</title>
+    <style>
+        /* Styling the grid and elements */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            gap: 5px;
+            margin: 20px auto;
+            width: max-content;
+            height: max-content;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+        .heart {
+            color: red;
+        }
+        .bullet {
+            color: blue;
+        }
+        .empty {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game">
+        <div class="grid">
+            <div class="cell empty" id="cell-0"></div>
+            <div class="cell empty" id="cell-1"></div>
+            <div class="cell empty" id="cell-2"></div>
+            <div class="cell empty" id="cell-3"></div>
+            <div class="cell empty" id="cell-4"></div>
+            <div class="cell empty" id="cell-5"></div>
+            <div class="cell empty" id="cell-6"></div>
+            <div class="cell empty" id="cell-7"></div>
+            <div class="cell empty" id="cell-8"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initial game setup
+        const grid = document.querySelector('.grid');
+        const cells = Array.from(document.querySelectorAll('.cell'));
+        let playerPos = 4; // Player starts in the middle
+        let bulletPos = 6; // Bullet starts in a random position
+
+        function resetGrid() {
+            // Reset all cells to empty
+            cells.forEach(cell => {
+                cell.innerHTML = '';
+                cell.classList.remove('heart', 'bullet');
+            });
+        }
+
+        function render() {
+            resetGrid();
+            // Draw the player heart in the correct position
+            cells[playerPos].innerHTML = '❤️';
+            cells[playerPos].classList.add('heart');
+            // Draw the bullet in the correct position
+            cells[bulletPos].innerHTML = '💥';
+            cells[bulletPos].classList.add('bullet');
+        }
+
+        // Player movement with WASD keys
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'w' && playerPos > 2) {
+                playerPos -= 3; // Move up
+            } else if (e.key === 's' && playerPos < 6) {
+                playerPos += 3; // Move down
+            } else if (e.key === 'a' && playerPos % 3 !== 0) {
+                playerPos -= 1; // Move left
+            } else if (e.key === 'd' && playerPos % 3 !== 2) {
+                playerPos += 1; // Move right
+            }
+            render();
+        });
+
+        function moveBullet() {
+            // Move bullet down one step
+            if (bulletPos < 6) {
+                bulletPos += 3;
+            } else {
+                bulletPos = 0; // Reset bullet to the top
+            }
+            render();
+        }
+
+        function checkCollision() {
+            if (playerPos === bulletPos) {
+                alert('You got hit! Game Over.');
+                playerPos = 4; // Reset player position
+                bulletPos = 6; // Reset bullet position
+                render();
+            }
+        }
+
+        // Main game loop
+        function gameLoop() {
+            moveBullet();
+            checkCollision();
+        }
+
+        setInterval(gameLoop, 1000); // Update every second
+
+        // Initial render
+        render();
+    </script>
+
+</body>
+</html>
