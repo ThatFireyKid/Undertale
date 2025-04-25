@@ -1,125 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undertale Battle - Bullet Hell</title>
-    <style>
-        /* Styling the grid and elements */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 50px);
-            grid-template-rows: repeat(3, 50px);
-            gap: 5px;
-            margin: 20px auto;
-            width: max-content;
-            height: max-content;
-        }
-        .cell {
-            width: 50px;
-            height: 50px;
-            border: 1px solid black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-        }
-        .heart {
-            color: red;
-        }
-        .bullet {
-            color: blue;
-        }
-        .empty {
-            background-color: #fff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undertale Bullet Hell</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: black;
+      color: white;
+    }
+    .game-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border: 2px solid white;
+    }
+    .soul {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      border-radius: 50%;
+      top: 135px; /* Start position vertically centered */
+      left: 135px; /* Start position horizontally centered */
+    }
+    .bullet {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: blue;
+      border-radius: 50%;
+    }
+  </style>
 </head>
 <body>
+  <div class="game-container">
+    <div class="soul" id="soul"></div>
+  </div>
 
-    <div id="game">
-        <div class="grid">
-            <div class="cell empty" id="cell-0"></div>
-            <div class="cell empty" id="cell-1"></div>
-            <div class="cell empty" id="cell-2"></div>
-            <div class="cell empty" id="cell-3"></div>
-            <div class="cell empty" id="cell-4"></div>
-            <div class="cell empty" id="cell-5"></div>
-            <div class="cell empty" id="cell-6"></div>
-            <div class="cell empty" id="cell-7"></div>
-            <div class="cell empty" id="cell-8"></div>
-        </div>
-    </div>
+  <script>
+    const soul = document.getElementById('soul');
+    let soulX = 135, soulY = 135; // Starting position of the soul
 
-    <script>
-        // Initial game setup
-        const grid = document.querySelector('.grid');
-        const cells = Array.from(document.querySelectorAll('.cell'));
-        let playerPos = 4; // Player starts in the middle
-        let bulletPos = 6; // Bullet starts in a random position
+    // Update the position of the soul element
+    function updateSoulPosition() {
+      soul.style.left = soulX + 'px';
+      soul.style.top = soulY + 'px';
+    }
 
-        function resetGrid() {
-            // Reset all cells to empty
-            cells.forEach(cell => {
-                cell.innerHTML = '';
-                cell.classList.remove('heart', 'bullet');
-            });
+    // Listen for keydown events to move the soul
+    window.addEventListener('keydown', (e) => {
+      const gridSize = 30; // Size of each "step"
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'w':
+          soulY = Math.max(soulY - gridSize, 0); // Prevent moving outside the top boundary
+          break;
+        case 'ArrowDown':
+        case 's':
+          soulY = Math.min(soulY + gridSize, 270); // Prevent moving outside the bottom boundary
+          break;
+        case 'ArrowLeft':
+        case 'a':
+          soulX = Math.max(soulX - gridSize, 0); // Prevent moving outside the left boundary
+          break;
+        case 'ArrowRight':
+        case 'd':
+          soulX = Math.min(soulX + gridSize, 270); // Prevent moving outside the right boundary
+          break;
+      }
+      updateSoulPosition(); // Update the position after moving
+    });
+
+    // Set up the game loop for bullets
+    function spawnBullet() {
+      const bullet = document.createElement('div');
+      bullet.classList.add('bullet');
+      bullet.style.left = Math.random() * 290 + 'px'; // Random X position
+      bullet.style.top = '0px'; // Start from the top
+      document.querySelector('.game-container').appendChild(bullet);
+      
+      // Move the bullet down
+      let bulletY = 0;
+      const moveBullet = setInterval(() => {
+        bulletY += 5;
+        bullet.style.top = bulletY + 'px';
+
+        // Remove the bullet when it goes off-screen
+        if (bulletY > 300) {
+          clearInterval(moveBullet);
+          bullet.remove();
         }
+      }, 50);
+    }
 
-        function render() {
-            resetGrid();
-            // Draw the player heart in the correct position
-            cells[playerPos].innerHTML = '❤️';
-            cells[playerPos].classList.add('heart');
-            // Draw the bullet in the correct position
-            cells[bulletPos].innerHTML = '💥';
-            cells[bulletPos].classList.add('bullet');
-        }
-
-        // Player movement with WASD keys
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'w' && playerPos > 2) {
-                playerPos -= 3; // Move up
-            } else if (e.key === 's' && playerPos < 6) {
-                playerPos += 3; // Move down
-            } else if (e.key === 'a' && playerPos % 3 !== 0) {
-                playerPos -= 1; // Move left
-            } else if (e.key === 'd' && playerPos % 3 !== 2) {
-                playerPos += 1; // Move right
-            }
-            render();
-        });
-
-        function moveBullet() {
-            // Move bullet down one step
-            if (bulletPos < 6) {
-                bulletPos += 3;
-            } else {
-                bulletPos = 0; // Reset bullet to the top
-            }
-            render();
-        }
-
-        function checkCollision() {
-            if (playerPos === bulletPos) {
-                alert('You got hit! Game Over.');
-                playerPos = 4; // Reset player position
-                bulletPos = 6; // Reset bullet position
-                render();
-            }
-        }
-
-        // Main game loop
-        function gameLoop() {
-            moveBullet();
-            checkCollision();
-        }
-
-        setInterval(gameLoop, 1000); // Update every second
-
-        // Initial render
-        render();
-    </script>
-
+    // Spawn bullets every 1.5 seconds
+    setInterval(spawnBullet, 1500);
+  </script>
 </body>
 </html>
