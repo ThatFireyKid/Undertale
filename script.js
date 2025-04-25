@@ -4,10 +4,13 @@ let isPlayerTurn = true;
 let enemyTurn = false;
 
 const soul = document.getElementById("soul");
+
 let soulX = 150;
 let soulY = 150;
-const speed = 2; 
+const speed = 1.5;
 const keysHeld = new Set();
+
+let soulMode = "gray"; // Options: gray, blue, yellow
 
 function updateSoulPosition() {
   if (!isPlayerTurn) {
@@ -16,7 +19,6 @@ function updateSoulPosition() {
     if (keysHeld.has("a") || keysHeld.has("ArrowLeft")) soulX -= speed;
     if (keysHeld.has("d") || keysHeld.has("ArrowRight")) soulX += speed;
 
-    // Clamp within battle box bounds (adjust as needed)
     soulX = Math.max(0, Math.min(290, soulX));
     soulY = Math.max(0, Math.min(190, soulY));
 
@@ -26,49 +28,12 @@ function updateSoulPosition() {
 
   requestAnimationFrame(updateSoulPosition);
 }
-
-// Start the loop
 requestAnimationFrame(updateSoulPosition);
 
-// Track key presses
+// Handle held keys
 document.addEventListener("keydown", (e) => {
   keysHeld.add(e.key.toLowerCase());
-});
 
-document.addEventListener("keyup", (e) => {
-  keysHeld.delete(e.key.toLowerCase());
-});
-
-function updateSelection() {
-  menuOptions.forEach((id, index) => {
-    const btn = document.getElementById(id);
-    if (index === selectedIndex) {
-      btn.classList.add("selected");
-    } else {
-      btn.classList.remove("selected");
-    }
-  });
-}
-
-function startEnemyTurn() {
-  isPlayerTurn = false;
-  enemyTurn = true;
-  document.getElementById("ui").style.display = "none";
-  document.getElementById("battle-box").style.display = "block";
-
-  updateSoulPosition();
-
-  setTimeout(() => {
-    isPlayerTurn = true;
-    enemyTurn = false;
-    document.getElementById("ui").style.display = "block";
-    document.getElementById("battle-box").style.display = "none";
-    updateSelection();
-  }, 5000); // 5 seconds of bullet hell
-}
-
-document.addEventListener("keydown", (e) => {
-  // PLAYER TURN CONTROLS
   if (isPlayerTurn) {
     if (e.key === "a" || e.key === "ArrowLeft") {
       selectedIndex = (selectedIndex - 1 + menuOptions.length) % menuOptions.length;
@@ -88,15 +53,54 @@ document.addEventListener("keydown", (e) => {
       }
     }
   }
-
-  // ENEMY TURN (SOUL MOVEMENT)
-  if (enemyTurn) {
-    if (e.key === "w") soulY -= moveSpeed;
-    if (e.key === "s") soulY += moveSpeed;
-    if (e.key === "a") soulX -= moveSpeed;
-    if (e.key === "d") soulX += moveSpeed;
-    updateSoulPosition();
-  }
 });
+
+document.addEventListener("keyup", (e) => {
+  keysHeld.delete(e.key.toLowerCase());
+});
+
+function updateSelection() {
+  menuOptions.forEach((id, index) => {
+    const btn = document.getElementById(id);
+    if (index === selectedIndex) {
+      btn.classList.add("selected");
+    } else {
+      btn.classList.remove("selected");
+    }
+  });
+}
+
+function setSoulMode(mode) {
+  soulMode = mode;
+  switch (mode) {
+    case "blue":
+      soul.src = "assets/BlueSoul.png";
+      break;
+    case "yellow":
+      soul.src = "assets/YellowSoul.png";
+      break;
+    case "gray":
+    default:
+      soul.src = "assets/GraySoul.png";
+      break;
+  }
+}
+
+function startEnemyTurn() {
+  isPlayerTurn = false;
+  enemyTurn = true;
+  document.getElementById("ui").style.display = "none";
+  document.getElementById("battle-box").style.display = "block";
+
+  setSoulMode("gray"); // Change this to blue/yellow if you want different behavior
+
+  setTimeout(() => {
+    isPlayerTurn = true;
+    enemyTurn = false;
+    document.getElementById("ui").style.display = "block";
+    document.getElementById("battle-box").style.display = "none";
+    updateSelection();
+  }, 5000);
+}
 
 updateSelection();
