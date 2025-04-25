@@ -15,23 +15,23 @@ let velocityY = 0;
 let onGround = false;
 
 const keysHeld = new Set();
-let soulMode = "gray"; // gray, blue, yellow
+let soulMode = "red"; // gray, blue, yellow
 let bullets = [];
 
 function updateSoulPosition() {
   if (!isPlayerTurn) {
     if (soulMode !== "blue") {
-      if (keysHeld.has("w") || keysHeld.has("ArrowUp")) soulY -= speed;
-      if (keysHeld.has("s") || keysHeld.has("ArrowDown")) soulY += speed;
-      if (keysHeld.has("a") || keysHeld.has("ArrowLeft")) soulX -= speed;
-      if (keysHeld.has("d") || keysHeld.has("ArrowRight")) soulX += speed;
+      if (keysHeld.has("w") || keysHeld.has("arrowup")) soulY -= speed;
+      if (keysHeld.has("s") || keysHeld.has("arrowdown")) soulY += speed;
+      if (keysHeld.has("a") || keysHeld.has("arrowleft")) soulX -= speed;
+      if (keysHeld.has("d") || keysHeld.has("arrowright")) soulX += speed;
     }
 
     if (soulMode === "blue") {
       velocityY += gravity;
       soulY += velocityY;
 
-      if ((keysHeld.has("w") || keysHeld.has("ArrowUp")) && onGround) {
+      if ((keysHeld.has("w") || keysHeld.has("arrowup")) && onGround) {
         velocityY = jumpStrength;
         onGround = false;
       }
@@ -68,17 +68,16 @@ document.addEventListener("keydown", (e) => {
   const key = e.key.toLowerCase();
   keysHeld.add(key);
 
-  // Menu controls
   if (isPlayerTurn) {
-    if (key === "a" || e.key === "ArrowLeft") {
+    if (key === "a" || key === "arrowleft") {
       selectedIndex = (selectedIndex - 1 + menuOptions.length) % menuOptions.length;
       updateSelection();
     }
-    if (key === "d" || e.key === "ArrowRight") {
+    if (key === "d" || key === "arrowright") {
       selectedIndex = (selectedIndex + 1) % menuOptions.length;
       updateSelection();
     }
-    if (key === "z" || e.key === "Enter") {
+    if (key === "z" || key === "enter") {
       const selectedOption = menuOptions[selectedIndex];
       console.log("You selected:", selectedOption);
       if (selectedOption === "fight") {
@@ -87,8 +86,7 @@ document.addEventListener("keydown", (e) => {
     }
   }
 
-  // Yellow soul shoots
-  if (!isPlayerTurn && soulMode === "yellow" && (key === "z")) {
+  if (!isPlayerTurn && soulMode === "yellow" && key === "z") {
     shootBullet();
   }
 });
@@ -101,16 +99,23 @@ function updateSelection() {
   menuOptions.forEach((id, index) => {
     const btn = document.getElementById(id);
     if (index === selectedIndex) {
-      btn.classList.add("selected");
+      btn.src = `assets/${capitalize(id)}Selected.png`;
     } else {
-      btn.classList.remove("selected");
+      btn.src = `assets/${capitalize(id)}.png`;
     }
   });
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function setSoulMode(mode) {
   soulMode = mode;
   switch (mode) {
+    case "red":
+      soul.src = "assets/RedSoul.png";
+      break;
     case "blue":
       soul.src = "assets/BlueSoul.png";
       break;
@@ -127,7 +132,6 @@ function setSoulMode(mode) {
 function shootBullet() {
   const bullet = document.createElement("div");
   bullet.classList.add("bullet");
-  bullet.style.position = "absolute";
   bullet.style.width = "6px";
   bullet.style.height = "2px";
   bullet.style.backgroundColor = "yellow";
@@ -144,8 +148,7 @@ function startEnemyTurn() {
   document.getElementById("ui").style.display = "none";
   battleBox.style.display = "block";
 
-  // Set the mode here for testing (you can randomize or change it later)
-  setSoulMode("gray"); // try "blue" or "yellow"
+  setSoulMode("gray"); // Change to blue/yellow for testing different soul behavior
 
   soulX = 150;
   soulY = 150;
