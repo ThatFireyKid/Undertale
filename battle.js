@@ -6,6 +6,9 @@ let gameOver = false;
 
 // Function to move the player heart using keypresses (WASD)
 function movePlayer(event) {
+  // Only allow movement if it's the player's turn
+  if (!playerTurn || gameOver) return;
+
   const player = document.getElementById("player");
   let left = parseInt(player.style.left || "50%");
   let top = parseInt(player.style.top || "50%");
@@ -33,42 +36,50 @@ function movePlayer(event) {
 
 // Function to switch turns (for future bullet hell)
 function switchTurn() {
+  if (gameOver) return; // If the game is over, stop switching turns.
+
+  playerTurn = !playerTurn;  // Toggle turns
   if (playerTurn) {
-    playerTurn = false;
-    // Logic for opponent turn (bullet hell or other actions)
-    // Once opponent turn is over, switch back to player turn
-    setTimeout(() => {
-      playerTurn = true;
-    }, 1000);  // You can adjust this delay as needed
+    // Reset some things for the player's turn
+    console.log("Player's turn! Move and attack.");
+  } else {
+    // Opponent's turn logic (attacks, bullet hell, etc.)
+    console.log("Opponent's turn! Enemy attacks!");
+    opponentAttack();
   }
 }
 
-// Update health values (for future damage handling)
-function updateHealth() {
-  document.getElementById("playerHealthValue").textContent = playerHealth;
-  document.getElementById("opponentHealthValue").textContent = opponentHealth;
-}
-
-// Add event listener for movement
-document.addEventListener("keydown", movePlayer);
-
-// Placeholder to simulate an opponent attack (you can add your own logic later)
+// Function to simulate opponent attack (for damage handling)
 function opponentAttack() {
   if (!playerTurn && !gameOver) {
     // Simulate opponent attack (e.g., reduce player health)
-    playerHealth -= 10;
+    let damage = Math.floor(Math.random() * 10) + 5; // Random damage
+    playerHealth -= damage;
     updateHealth();
 
     // Check if game is over
     if (playerHealth <= 0) {
       gameOver = true;
       alert("Game Over! You lost.");
+    } else {
+      // If player is still alive, switch to player's turn after a brief delay
+      setTimeout(switchTurn, 1000);  // Delay before switching to the player's turn
     }
   }
 }
 
-// Simulate a battle turn cycle
+// Update health values on screen
+function updateHealth() {
+  document.getElementById("playerHealthValue").textContent = playerHealth;
+  document.getElementById("opponentHealthValue").textContent = opponentHealth;
+}
+
+// Add event listener for movement (WASD keys)
+document.addEventListener("keydown", movePlayer);
+
+// Simulate a battle turn cycle with a delay
 setInterval(() => {
-  opponentAttack();
-  switchTurn();
-}, 2000); // Every 2 seconds, opponent takes a turn (this can be adjusted)
+  if (!gameOver) {
+    switchTurn();
+  }
+}, 3000); // Change turns every 3 seconds
