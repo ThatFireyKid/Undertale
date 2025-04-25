@@ -1,4 +1,16 @@
-/* Add this to the CSS */
+/* Basic battle UI styling */
+#battleUI {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: Arial, sans-serif;
+}
+
+#playerHealth, #opponentHealth {
+  font-size: 20px;
+}
+
+/* Player heart styling */
 .player {
   width: 30px;
   height: 30px;
