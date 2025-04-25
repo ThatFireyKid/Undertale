@@ -1,67 +1,43 @@
-/* General Body Styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #000;
-  color: #fff;
+  background-color: black;
+  color: white;
+  font-family: 'Courier New', monospace;
   text-align: center;
+  margin-top: 40px;
 }
 
-/* Main game container */
-#game-container {
-  margin-top: 50px;
-}
-
-/* Battle screen where the player moves */
-#battle-screen {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  background-color: #333;
-  margin: 0 auto;
-  border: 1px solid #fff;
+#battle-ui {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 
-/* Player's heart (soul) style */
-#player {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  background-color: red;
-  border-radius: 50%;
+#menu {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-/* Bullet style for the enemy's attack */
-#bullet {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: yellow;
-  border-radius: 50%;
-}
-
-/* Turn indicator (Player's Turn / Enemy's Turn) */
-#turn-indicator {
-  margin-top: 20px;
-  font-size: 18px;
-}
-
-/* Action buttons (Fight, Act, Item, Mercy) */
-#action-buttons {
-  margin-top: 20px;
-}
-
-button {
-  padding: 10px;
-  margin: 5px;
-  background-color: #444;
-  border: none;
-  color: #fff;
+.menu-option {
+  background: none;
+  border: 2px solid white;
+  color: white;
+  padding: 10px 20px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #666;
+#battle-box {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  border: 3px solid white;
+  margin-top: 20px;
+  display: none; /* hidden until enemy turn */
+}
+
+#soul {
+  position: absolute;
+  top: 65px;
+  left: 140px;
+  font-size: 20px;
 }
