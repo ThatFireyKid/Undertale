@@ -1,0 +1,12 @@
+/* Add this to the CSS */
+.player {
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
