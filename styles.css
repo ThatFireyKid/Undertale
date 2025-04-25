@@ -21,7 +21,7 @@ body {
   cursor: pointer;
 }
 
-#ui .selected {
+#.selected {
   outline: 2px solid yellow;
 }
 
