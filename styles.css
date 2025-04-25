@@ -1,47 +1,33 @@
-body {
-  background: black;
-  color: white;
-  font-family: sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
-
 #ui {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
   margin-top: 20px;
 }
 
-#ui button {
-  font-size: 20px;
-  margin: 10px;
-  padding: 10px 20px;
-  background: black;
-  color: white;
-  border: 2px solid white;
-  cursor: pointer;
-}
-
-#.selected {
-  outline: 2px solid yellow;
+.menu-option {
+  width: 64px;
+  height: auto;
+  image-rendering: pixelated;
 }
 
 #battle-box {
+  position: relative;
   width: 300px;
   height: 200px;
+  margin: auto;
   border: 2px solid white;
-  margin: 50px auto;
-  position: relative;
   display: none;
+  background-color: black;
 }
 
 #soul {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
 }
 
 .bullet {
   position: absolute;
-  z-index: 10;
 }
