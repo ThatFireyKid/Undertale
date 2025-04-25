@@ -1,43 +1,43 @@
 body {
-  background-color: black;
+  background: black;
   color: white;
-  font-family: 'Courier New', monospace;
+  font-family: sans-serif;
   text-align: center;
-  margin-top: 40px;
+  margin: 0;
+  padding: 0;
 }
 
-#battle-ui {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#ui {
+  margin-top: 20px;
 }
 
-#menu {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.menu-option {
-  background: none;
-  border: 2px solid white;
-  color: white;
+#ui button {
+  font-size: 20px;
+  margin: 10px;
   padding: 10px 20px;
+  background: black;
+  color: white;
+  border: 2px solid white;
   cursor: pointer;
 }
 
-#battle-box {
-  position: relative;
-  width: 300px;
-  height: 150px;
-  border: 3px solid white;
-  margin-top: 20px;
-  display: none; /* hidden until enemy turn */
+#ui .selected {
+  outline: 2px solid yellow;
 }
 
-#soul {
+#battle-box {
+  width: 300px;
+  height: 200px;
+  border: 2px solid white;
+  margin: 50px auto;
+  position: relative;
+  display: none;
+}
+
+#player-soul {
   position: absolute;
-  top: 65px;
   left: 140px;
+  top: 90px;
+  color: red;
   font-size: 20px;
 }
