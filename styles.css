@@ -40,3 +40,8 @@ body {
   height: 20px;
   pointer-events: none;
 }
+
+.bullet {
+  position: absolute;
+  z-index: 10;
+}
