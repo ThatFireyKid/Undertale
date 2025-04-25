@@ -4,66 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Undertale Battle</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    .battle-ui {
-      margin-top: 20px;
-    }
-    .health-bar {
-      width: 200px;
-      height: 25px;
-      border: 2px solid white;
-      margin: 10px 0;
-    }
-    .health {
-      height: 100%;
-      background-color: red;
-      width: 100%;
-    }
-    .action-menu {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-    .turn-indicator {
-      margin-top: 20px;
-      font-size: 24px;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="battle-ui">
-    <div>
-      <h3>Player (Soul)</h3>
-      <div class="health-bar">
-        <div class="health" id="player-health"></div>
-      </div>
+  <!-- Battle UI -->
+  <div id="battleUI">
+    <div id="playerHealth">
+      Player Health: <span id="playerHealthValue">100</span>
     </div>
-
-    <div>
-      <h3>Opponent (Boss)</h3>
-      <div class="health-bar">
-        <div class="health" id="opponent-health"></div>
-      </div>
+    <div id="opponentHealth">
+      Opponent Health: <span id="opponentHealthValue">100</span>
     </div>
-
-    <div class="action-menu" id="action-menu">
-      <button onclick="takeAction('fight')">Fight</button>
-      <button onclick="takeAction('act')">Act</button>
-      <button onclick="takeAction('mercy')">Mercy</button>
-    </div>
-
-    <div class="turn-indicator" id="turn-indicator">It's your turn!</div>
   </div>
+
+  <!-- Player Heart (Represented by div) -->
+  <div class="player" id="player"></div>
 
   <script src="battle.js"></script>
 </body>
 </html>
-
