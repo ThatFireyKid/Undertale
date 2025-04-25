@@ -1,85 +1,110 @@
-// Initialize player and opponent health
 let playerHealth = 100;
 let opponentHealth = 100;
 let playerTurn = true;  // Starts with the player's turn
 let gameOver = false;
+let playerAction = "";  // Holds player's chosen action
 
-// Function to move the player heart using keypresses (WASD)
-function movePlayer(event) {
-  // Only allow movement if it's the player's turn
-  if (!playerTurn || gameOver) return;
+// Initialize the player and opponent positions (could be more complex for actual game)
+let playerPosition = { x: 50, y: 50 };  // Player's starting position
 
-  const player = document.getElementById("player");
-  let left = parseInt(player.style.left || "50%");
-  let top = parseInt(player.style.top || "50%");
-
-  // Moving the player based on keypress
-  switch (event.key) {
-    case "w": // Move up
-      top -= 5;
-      break;
-    case "a": // Move left
-      left -= 5;
-      break;
-    case "s": // Move down
-      top += 5;
-      break;
-    case "d": // Move right
-      left += 5;
-      break;
-  }
-
-  // Update player position
-  player.style.left = `${left}%`;
-  player.style.top = `${top}%`;
-}
-
-// Function to switch turns (for future bullet hell)
-function switchTurn() {
-  if (gameOver) return; // If the game is over, stop switching turns.
-
-  playerTurn = !playerTurn;  // Toggle turns
-  if (playerTurn) {
-    // Reset some things for the player's turn
-    console.log("Player's turn! Move and attack.");
-  } else {
-    // Opponent's turn logic (attacks, bullet hell, etc.)
-    console.log("Opponent's turn! Enemy attacks!");
-    opponentAttack();
-  }
-}
-
-// Function to simulate opponent attack (for damage handling)
-function opponentAttack() {
-  if (!playerTurn && !gameOver) {
-    // Simulate opponent attack (e.g., reduce player health)
-    let damage = Math.floor(Math.random() * 10) + 5; // Random damage
-    playerHealth -= damage;
-    updateHealth();
-
-    // Check if game is over
-    if (playerHealth <= 0) {
-      gameOver = true;
-      alert("Game Over! You lost.");
-    } else {
-      // If player is still alive, switch to player's turn after a brief delay
-      setTimeout(switchTurn, 1000);  // Delay before switching to the player's turn
-    }
-  }
-}
-
-// Update health values on screen
+// Update health and UI
 function updateHealth() {
   document.getElementById("playerHealthValue").textContent = playerHealth;
   document.getElementById("opponentHealthValue").textContent = opponentHealth;
 }
 
-// Add event listener for movement (WASD keys)
+// Function to handle player's action (FIGHT, ACT, ITEM, MERCY)
+function playerActionChoice(action) {
+  if (gameOver) return;
+
+  playerAction = action;
+  console.log(`Player chooses to ${action}`);
+
+  // Switch to opponent's turn after action
+  startOpponentTurn();
+}
+
+// Start the opponent's turn (Bullet Hell)
+function startOpponentTurn() {
+  if (gameOver) return;
+
+  console.log("Opponent's Turn: Bullet Hell");
+  playerTurn = false;
+
+  // Bullet Hell Attack
+  opponentAttack();
+
+  // Wait for Bullet Hell to end before going back to player's turn
+  setTimeout(() => {
+    if (!gameOver) {
+      startPlayerTurn();
+    }
+  }, 3000);  // Bullet Hell lasts for 3 seconds, can be adjusted for difficulty
+}
+
+// Simulate the opponent attacking (bullet hell)
+function opponentAttack() {
+  let damage = Math.floor(Math.random() * 10) + 5;  // Random damage (could be bullets in the future)
+  playerHealth -= damage;
+  updateHealth();
+
+  if (playerHealth <= 0) {
+    gameOver = true;
+    alert("Game Over! You lost.");
+  }
+}
+
+// Start the player's turn (choose an action)
+function startPlayerTurn() {
+  if (gameOver) return;
+
+  console.log("Player's Turn: Choose your action.");
+  playerTurn = true;
+  displayActionChoices();  // Show action options (FIGHT, ACT, ITEM, MERCY)
+}
+
+// Display action choices for the player
+function displayActionChoices() {
+  const actionOptions = ["FIGHT", "ACT", "ITEM", "MERCY"];
+  // Display these choices in the UI, assuming we have buttons for each action
+  actionOptions.forEach(action => {
+    let actionButton = document.createElement("button");
+    actionButton.textContent = action;
+    actionButton.onclick = () => playerActionChoice(action);
+    document.body.appendChild(actionButton);
+  });
+}
+
+// Handle bullet hell and movement (player's movement during bullet hell phase)
+function movePlayer(event) {
+  if (!playerTurn || gameOver) return;
+
+  let left = parseInt(playerPosition.x);
+  let top = parseInt(playerPosition.y);
+
+  switch (event.key) {
+    case "w": top -= 5; break;  // Move up
+    case "a": left -= 5; break;  // Move left
+    case "s": top += 5; break;  // Move down
+    case "d": left += 5; break;  // Move right
+  }
+
+  // Update player position on screen
+  playerPosition.x = left;
+  playerPosition.y = top;
+
+  // Update player on screen (assuming a div for the player)
+  const player = document.getElementById("player");
+  player.style.left = `${left}%`;
+  player.style.top = `${top}%`;
+}
+
+// Key event listener for movement
 document.addEventListener("keydown", movePlayer);
 
-// Simulate a battle turn cycle with a delay
-setInterval(() => {
-  if (!gameOver) {
-    switchTurn();
-  }
-}, 3000); // Change turns every 3 seconds
+// Start the game loop
+function startGame() {
+  startPlayerTurn();  // Player starts the game
+}
+
+startGame();
