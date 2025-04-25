@@ -73,6 +73,8 @@ function updateSelection() {
 function setSoulMode(mode) {
   soulMode = mode;
   switch (mode) {
+    case "red";
+      soul.src = "assets/RedSoul.png";
     case "blue":
       soul.src = "assets/BlueSoul.png";
       break;
@@ -87,6 +89,7 @@ function setSoulMode(mode) {
 }
 
 function startEnemyTurn() {
+  setSoulMode("blue");   // or "yellow", or "gray"
   isPlayerTurn = false;
   enemyTurn = true;
   document.getElementById("ui").style.display = "none";
